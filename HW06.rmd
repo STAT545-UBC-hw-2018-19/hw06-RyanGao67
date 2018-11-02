@@ -338,58 +338,237 @@ str_view(stringr::words, pattern=".*(.).*\\1.*\\1", match=TRUE)
 
 Find all words that start or end with x.
 
+* Solution:
+```{r}
+# regex
+str_subset(stringr::words, pattern = "^x|x$")
+#multiple str_detect()
+a = str_detect(stringr::words, pattern = "^x")
+b = str_detect(stringr::words, pattern = "x$")
+stringr::words %>%
+  `[`(a|b)
+```
+
 Find all words that start with a vowel and end with a consonant.
+
+* Solution:
+```{r}
+# regex
+str_subset(stringr::words, pattern = "^[aeiou].*[^aeiou]$")
+#multiple str_detect()
+a = str_detect(stringr::words, pattern="^[aeiou]")
+b = str_detect(stringr::words, pattern="[^aeiou]$")
+stringr::words %>%
+  `[`(a & b)
+```
+
 
 Are there any words that contain at least one of each different vowel?
 
+* Solution: for this one I need to write a function. From the code below we can see that there is no such words
+```{r}
+check <- function(string){
+  unused = c("a", "e", "i", "o", "u")
+  logic=as.logical(seq(from=1, to=1, along.with=string))
+  for(i in unused){
+    logic = logic & str_detect(string, pattern = i)
+  }
+  return(string[logic]);
+}
+for(i in (stringr::words)){
+  check(i)
+}
+```
+
+
+
+
+
+
+
 (2)What word has the highest number of vowels? What word has the highest proportion of vowels? (Hint: what is the denominator?)
 
+* Solution:
+```{r}
+# highest number of vowels
+counts = str_count(stringr::words, pattern = "[aeiou]")
+stringr::words %>%
+  '['(which(counts == max(counts)))
 
+# highest proportion of vowels
+counts = str_count(stringr::words, pattern = "[aeiou]")/str_length(stringr::words)
+stringr::words %>%
+  '['(which(counts == max(counts)))
+```
 ##14.4.3.1 Exercises
 (1)In the previous example, you might have noticed that the regular expression matched ¡°flickered¡±, which is not a colour. Modify the regex to fix the problem.
 
+* To fix this problem, we need \b in regex. Here is the code:
+```{r}
+colours <- c("red", "orange", "yellow", "green", "blue", "purple")
+colour_match <- str_c(colours, collapse = "|")
+
+# turn color vector into a regex
+colour_match <- str_c("\\b", colour_match, "\\b")
+
+more <- sentences[str_count(sentences, colour_match) > 1]
+str_view_all(more, colour_match)
+```
 (2)From the Harvard sentences data, extract:
 
 The first word from each sentence.
+
+* Solution:
+```{r}
+str_extract(sentences, pattern="[a-zA-Z]+")
+```
+
 All words ending in ing.
+
+* Solution:
+```{r}
+ing_words = str_extract_all(sentences, pattern = "\\b[a-zA-Z]+ing\\b", simplify = TRUE)
+ing_words[ing_words!=""]
+```
+
 All plurals.
 
+* Solution:
+```{r}
+a =  str_extract_all(sentences, pattern = '[a-zA-Z]+s', simplify = TRUE)
+a[a!=""]
+```
 
 ##14.4.4.1 Exercises
 (1)Find all words that come after a ¡°number¡± like ¡°one¡±, ¡°two¡±, ¡°three¡± etc. Pull out both the number and the word.
 
+* Solution:
+```{r}
+# define numbers
+nums = c("zero","one","two","three","four","five","six","seven","eight","nine",
+         "ten","eleven","twelve","thirteen","fourteen","fifteen","sixteen","seventeen","eighteen","nineteen",
+         "twenty","thirty","forty","fifty","sixty","seventy","eighty","ninety",
+         "hundred","thousand","million","billion","trillion")
+
+# define pattern
+pattern <- str_c("(", str_c(nums, collapse = "|"), ") ([^ \\.]+)")
+
+a = str_extract_all(sentences, pattern = pattern, simplify = TRUE)
+# exclude the empty ones
+a[a!=""]
+```
+
 (2)Find all contractions. Separate out the pieces before and after the apostrophe.
 
+* Solution:
+```{r}
+# patterns
+pattern <- "([A-Za-z]+)'([A-Za-z]+)"
+# get the contractions
+contractions <- str_extract_all(sentences, pattern = pattern, simplify = TRUE)
+# filter the empty ones
+contractions = contractions[contractions!=""]
+contractions
+str_split(contractions, pattern = "'", simplify = TRUE)
+
+```
 
 ##14.4.5.1 Exercises
 (1)Replace all forward slashes in a string with backslashes.
 
+* Solution:
+```{r}
+str_replace_all("hello///world", pattern = "/", "\\\\")
+```
+
 (2)Implement a simple version of str_to_lower() using replace_all().
+
+* Solution:
+```{r}
+str_replace_all("HELLOWORLD", c("A"="a", "B"="b", "C"="c", "D"="d", "E"="e", "F"="f", "G"="g", "H"="h", "I"="i", "J"="j", "K"="k", "L"="l", "M"="m", "N"="n", "O"="o", "P"="p", "Q"="q", "R"="r", "S"="s", "T"="t", "U"="u", "V"="v", "W"="w", "X"="x", "Y"="y", "Z"="z"))
+```
 
 (3)Switch the first and last letters in words. Which of those strings are still words?
 
+* Solution:
+```{r}
+# change the order of the characters
+
+switch <- str_replace(stringr::words, pattern = "(^[a-zA-Z])([a-zA-Z]*)([a-zA-Z]$)", replacement = "\\3\\2\\1")
+
+# find the ones that are still words
+intersect(stringr::words, switch)
+```
 
 
 ##Exercises 14.4.6.1
 
 (1)Split up a string like "apples, pears, and bananas" into individual components.
 
-
+* Solution:
+```{r}
+s = c("apples, pears, and bananas")
+str_split(s, boundary("word"))[[1]]
+```
 (2)Why is it better to split up by boundary("word") than " "?
 
+* Solution: Because there punctuations that is not whitespace
 
 (3)What does splitting with an empty string ("") do? Experiment, and then read the documentation.
+
+* Solution: string "" will split the string into single characters
+```{r}
+str_split(s,"")[[1]]
+```
 
 ##14.5.1 Exercises
 (1)How would you find all strings containing \ with regex() vs. with fixed()?
 
+* Solution:
+```{r}
+str_subset(c("hello\\world","hello"), "\\\\")
+str_subset(c("hello\\world", "hello"), fixed("\\"))
+```
 (2)What are the five most common words in sentences?
+
+* Solution
+```{r}
+str_extract_all(sentences, boundary("word")) %>%
+  unlist() %>%
+  str_to_lower() %>%
+  tibble() %>%
+  set_names("words") %>%
+  group_by(words) %>%
+  count(sort = TRUE) %>%
+  head(5)
+```
 
 ##14.7.1 Exercises
 (1)Find the stringi functions that:
 
 Count the number of words.
+
+* Solution:
+```{r}
+stringi::stri_count_words("hello world")
+```
+
 Find duplicated strings.
+
+* Solution:
+
+```{r}
+stringi::stri_duplicated_any(c("hello", "hello", "world"))
+```
+
 Generate random text.
 
+* Solution:
+
+```{r}
+stringi::stri_rand_strings(5,2)
+```
+
 (2)How do you control the language that stri_sort() uses for sorting?
+
+* Solution: we can use language argument in stri_sort function for example, stri_sort(french_words, french = TRUE)
