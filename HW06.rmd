@@ -175,7 +175,7 @@ Since this list is long, you might want to use the match argument to str_view() 
 str_view(stringr::words, pattern="^.{7,}$", match=TRUE)
 ```
 
-##14.3.3.1 Exercises
+## 14.3.3.1 Exercises
 
 (1)Create regular expressions to find all words that:
 
@@ -285,7 +285,7 @@ str_view(stringr::words, pattern="([aeiou][^aeiou]){2,}", match=TRUE)
 
 Solve the beginner regexp crosswords at https://regexcrossword.com/challenges/beginner.
 
-##14.3.5.1 Exercises
+## 14.3.5.1 Exercises
 (1)Describe, in words, what these expressions will match:
 
 (.)\1\1
@@ -403,7 +403,7 @@ stringr::words %>%
 
 
 
-##14.4.3.1 Exercises
+## 14.4.3.1 Exercises
 (1)In the previous example, you might have noticed that the regular expression matched ¡°flickered¡±, which is not a colour. Modify the regex to fix the problem.
 
 * To fix this problem, we need \b in regex. Here is the code:
@@ -442,7 +442,7 @@ a =  str_extract_all(sentences, pattern = '[a-zA-Z]+s', simplify = TRUE)
 a[a!=""]
 ```
 
-##14.4.4.1 Exercises
+## 14.4.4.1 Exercises
 (1)Find all words that come after a ¡°number¡± like ¡°one¡±, ¡°two¡±, ¡°three¡± etc. Pull out both the number and the word.
 
 * Solution:
@@ -476,7 +476,7 @@ str_split(contractions, pattern = "'", simplify = TRUE)
 
 ```
 
-##14.4.5.1 Exercises
+## 14.4.5.1 Exercises
 (1)Replace all forward slashes in a string with backslashes.
 
 * Solution:
@@ -504,7 +504,7 @@ intersect(stringr::words, switch)
 ```
 
 
-##Exercises 14.4.6.1
+## Exercises 14.4.6.1
 
 (1)Split up a string like "apples, pears, and bananas" into individual components.
 
@@ -524,7 +524,7 @@ str_split(s, boundary("word"))[[1]]
 str_split(s,"")[[1]]
 ```
 
-##14.5.1 Exercises
+## 14.5.1 Exercises
 (1)How would you find all strings containing \ with regex() vs. with fixed()?
 
 * Solution:
@@ -546,7 +546,7 @@ str_extract_all(sentences, boundary("word")) %>%
   head(5)
 ```
 
-##14.7.1 Exercises
+## 14.7.1 Exercises
 (1)Find the stringi functions that:
 
 Count the number of words.
