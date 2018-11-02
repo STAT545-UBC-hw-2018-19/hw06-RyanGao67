@@ -400,6 +400,9 @@ counts = str_count(stringr::words, pattern = "[aeiou]")/str_length(stringr::word
 stringr::words %>%
   '['(which(counts == max(counts)))
 ```
+
+
+
 ##14.4.3.1 Exercises
 (1)In the previous example, you might have noticed that the regular expression matched ¡°flickered¡±, which is not a colour. Modify the regex to fix the problem.
 
