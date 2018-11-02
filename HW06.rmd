@@ -1,9 +1,13 @@
 ---
 title: "STAT 547M Homework 6"
 author: "Tian Gao"
-date: "Oct 30, 2018"
-output: github_document
-always_allow_html: yes
+date: "Oct 29, 2018"
+output:
+  html_document:
+    keep_md: true
+    toc: true
+    toc_depth: 2
+    theme: readable
 ---
 # Bring rectangular data in
 ```{r}
