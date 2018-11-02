@@ -3,6 +3,7 @@ title: "STAT 547M Homework 6"
 author: "Tian Gao"
 date: "Oct 30, 2018"
 output: github_document
+always_allow_html: yes
 ---
 # Bring rectangular data in
 ```{r}
@@ -116,76 +117,220 @@ tostring(c("a","b"))
 tostring(c("a","b","c"))
 ```
 
-14.3.1.1 Exercises
-Explain why each of these strings don¡¯t match a \: "\", "\\", "\\\".
+## 14.3.1.1 Exercises
 
-How would you match the sequence "'\?
+(1)Explain why each of these strings don¡¯t match a \: "\", "\\", "\\\".How would you match the sequence "'\?
 
-What patterns will the regular expression \..\..\.. match? How would you represent it as a string?
+* Solution: '\' is an escape character and is only meaningful when followed by some other character. '\\' is treated as '\' in R however is treated as escape character in regex, Thus it is also meaningless in regex. '\\\' will be interpreted as a back slash and and escape character in R, thus it is also illegal in regex. To match a '\', we can do the following:
+```{r}
+str_view('hello\\world', pattern="\\\\", match=TRUE)
+```
 
-14.3.2.1 Exercises
-How would you match the literal string "$^$"?
+* To match "'\ we can do the following:
+```{r}
+str_view("hello'\\world", pattern="\\'\\\\", match=TRUE)
+```
 
-Given the corpus of common words in stringr::words, create regular expressions that find all words that:
+(2)What patterns will the regular expression \..\..\.. match? How would you represent it as a string?
 
-Start with ¡°y¡±.
-End with ¡°x¡±
-Are exactly three letters long. (Don¡¯t cheat by using str_length()!)
+* Solution: Regex "\..\..\.." can match a string like ".a.b.c" whhere a,b,c can be any other character. Here is a example:
+```{r}
+str_view("hello.w.o.rld", pattern="\\..\\..\\..", match=TRUE)
+```
+
+## 14.3.2.1 Exercises
+
+(1)How would you match the literal string "$^$"?
+* The example is given below
+```{r}
+str_view("hello$^$world", pattern="\\$\\^\\$", match = TRUE)
+```
+
+
+(2)Given the corpus of common words in stringr::words, create regular expressions that find all words that:
+
+* Start with ¡°y¡±.
+```{r}
+str_view(stringr::words, pattern="^y", match=TRUE)
+```
+
+* End with ¡°x¡±.
+```{r}
+str_view(stringr::words, pattern = "x$", match = TRUE)
+```
+
+* Are exactly three letters long. (Don¡¯t cheat by using str_length()!)
+```{r}
+str_view(stringr::words, pattern="^.{3}$",match=TRUE)
+```
+
 Have seven letters or more.
 Since this list is long, you might want to use the match argument to str_view() to show only the matching or non-matching words.
-14.3.3.1 Exercises
-Create regular expressions to find all words that:
+* Solutoin:
+```{r}
+str_view(stringr::words, pattern="^.{7,}$", match=TRUE)
+```
+
+##14.3.3.1 Exercises
+
+(1)Create regular expressions to find all words that:
 
 Start with a vowel.
-
+* Solution:
+```{r}
+str_view(stringr::words, pattern="^[aeiou]", match=TRUE)
+```
 That only contain consonants. (Hint: thinking about matching ¡°not¡±-vowels.)
 
+* Solution:
+```{r}
+str_view(stringr::words, pattern="[aeiou]", match=FALSE)
+```
 End with ed, but not with eed.
-
+* Solution:
+```{r}
+str_view(stringr::words, pattern="[^e]ed$", match=TRUE)
+```
 End with ing or ise.
 
-Empirically verify the rule ¡°i before e except after c¡±.
+* Solution:
+```{r}
+str_view(stringr::words, pattern="ing$|ise$", match=TRUE)
+```
+
+
+(2)Empirically verify the rule ¡°i before e except after c¡±.
+* Solution:
+```{r}
+str_subset(stringr::words, pattern = "[^c]ie")
+```
+* From the result we know that the i before e except after c is true.
 
 Is ¡°q¡± always followed by a ¡°u¡±?
 
-Write a regular expression that matches a word if it¡¯s probably written in British English, not American English.
+* Solution:
+```{r}
+str_view(stringr::words, pattern="q[^u]",match=TRUE)
+```
 
-Create a regular expression that will match telephone numbers as commonly written in your country.
+* we can see that the result is empty, thus this statement is true. 
 
-14.3.4.1 Exercises
-Describe the equivalents of ?, +, * in {m,n} form.
 
-Describe in words what these regular expressions match: (read carefully to see if I¡¯m using a regular expression or a string that defines a regular expression.)
+(3)Write a regular expression that matches a word if it¡¯s probably written in British English, not American English.
+
+* In American English, "u"  between "o" and "r" is sometimes omitted. We can use this to detect British English
+```{r}
+str_view(c("favourite", "favorite", "honor", "honour", "color","colour"), pattern=".our", match=TRUE)
+```
+
+(4)Create a regular expression that will match telephone numbers as commonly written in your country.
+
+* Solution: In Canada, the telephone number is in this format: +1 (xxx) xxx xxxx, we can build a regex based on this. 
+```{r}
+str_view(c("+1 (778) 522 0667", "+86 1836230399", "+123456789"), pattern="\\+1 \\([1-9]{3}\\) [0-9]{3} [0-9]{4}")
+```
+
+## 14.3.4.1 Exercises
+(1)Describe the equivalents of ?, +, * in {m,n} form.
+
+* Solution: ? is equivalent to {0,1}; + is equivilent to {1,}; * is equivalent to {0,}
+
+(2)Describe in words what these regular expressions match: (read carefully to see if I¡¯m using a regular expression or a string that defines a regular expression.)
 
 ^.*$
+
+* Solution: matches any string
+
 "\\{.+\\}"
+
+* Solution: matched at least one any character surrounded by {}
+
 \d{4}-\d{2}-\d{2}
+
+* Solution: matches a consecutive 4 digit followed by - followed by consecutive 2 digits followed by - followed by 2 consecutive digits, eg, 2018-11-11
+
 "\\\\{4}"
-Create regular expressions to find all words that:
+
+* Solution: matches '\\\\'
+
+(3)Create regular expressions to find all words that:
 
 Start with three consonants.
+
+* Solution:
+```{r}
+str_view(stringr::words, pattern="^[^aeiou]{3,}", match = TRUE)
+```
+
 Have three or more vowels in a row.
+
+* Solution:
+```{r}
+str_view(stringr::words, pattern = "[aeiou]{3,}", match=TRUE)
+```
+
+
 Have two or more vowel-consonant pairs in a row.
+
+* Solution:
+```{r}
+str_view(stringr::words, pattern="([aeiou][^aeiou]){2,}", match=TRUE)
+```
+
+
+
 Solve the beginner regexp crosswords at https://regexcrossword.com/challenges/beginner.
 
-14.3.5.1 Exercises
-Describe, in words, what these expressions will match:
+##14.3.5.1 Exercises
+(1)Describe, in words, what these expressions will match:
 
 (.)\1\1
+
+* Solution: matches any acharacter that appears three times
+
 "(.)(.)\\2\\1"
+
+* Solution: matches two characters that appear in reversed order, eg, 'abba'
+
 (..)\1
+
+* Solution: matches two characters that repeats two times, eg, "abab"
+
 "(.).\\1.\\1"
+
+* Soltion: matched a string with 5 characters, first third and fifth are the same, the second and forth are any character, eg, "azaba"
+
 "(.)(.)(.).*\\3\\2\\1"
-Construct regular expressions to match words that:
+
+* Solution: matches a string that the first three characters appear in reversed order at the string end, eg, "abcfjlksajfeioacba"
+
+(2)Construct regular expressions to match words that:
 
 Start and end with the same character.
 
+* Solution:
+
+```{r}
+str_view(stringr::words, pattern = "^(.).*\\1$", match=TRUE)
+```
+
+
 Contain a repeated pair of letters (e.g. ¡°church¡± contains ¡°ch¡± repeated twice.)
+
+* Solution:
+```{r}
+str_view(stringr::words, pattern = "(..).*\\1", match=TRUE)
+```
 
 Contain one letter repeated in at least three places (e.g. ¡°eleven¡± contains three ¡°e¡±s.)
 
-14.4.2 Exercises
-For each of the following challenges, try solving it by using both a single regular expression, and a combination of multiple str_detect() calls.
+* Solution:
+```{r}
+str_view(stringr::words, pattern=".*(.).*\\1.*\\1", match=TRUE)
+```
+
+## 14.4.2 Exercises
+(1)For each of the following challenges, try solving it by using both a single regular expression, and a combination of multiple str_detect() calls.
 
 Find all words that start or end with x.
 
@@ -193,42 +338,54 @@ Find all words that start with a vowel and end with a consonant.
 
 Are there any words that contain at least one of each different vowel?
 
-What word has the highest number of vowels? What word has the highest proportion of vowels? (Hint: what is the denominator?)
+(2)What word has the highest number of vowels? What word has the highest proportion of vowels? (Hint: what is the denominator?)
 
 
-14.4.3.1 Exercises
-In the previous example, you might have noticed that the regular expression matched ¡°flickered¡±, which is not a colour. Modify the regex to fix the problem.
+##14.4.3.1 Exercises
+(1)In the previous example, you might have noticed that the regular expression matched ¡°flickered¡±, which is not a colour. Modify the regex to fix the problem.
 
-From the Harvard sentences data, extract:
+(2)From the Harvard sentences data, extract:
 
 The first word from each sentence.
 All words ending in ing.
 All plurals.
 
 
-14.4.4.1 Exercises
-Find all words that come after a ¡°number¡± like ¡°one¡±, ¡°two¡±, ¡°three¡± etc. Pull out both the number and the word.
+##14.4.4.1 Exercises
+(1)Find all words that come after a ¡°number¡± like ¡°one¡±, ¡°two¡±, ¡°three¡± etc. Pull out both the number and the word.
 
-Find all contractions. Separate out the pieces before and after the apostrophe.
-
-
-14.4.5.1 Exercises
-Replace all forward slashes in a string with backslashes.
-
-Implement a simple version of str_to_lower() using replace_all().
-
-Switch the first and last letters in words. Which of those strings are still words?
-
-14.5.1 Exercises
-How would you find all strings containing \ with regex() vs. with fixed()?
-
-What are the five most common words in sentences?
+(2)Find all contractions. Separate out the pieces before and after the apostrophe.
 
 
-14.7.1 Exercises
-Find the stringi functions that:
+##14.4.5.1 Exercises
+(1)Replace all forward slashes in a string with backslashes.
+
+(2)Implement a simple version of str_to_lower() using replace_all().
+
+(3)Switch the first and last letters in words. Which of those strings are still words?
+
+
+
+##Exercises 14.4.6.1
+
+(1)Split up a string like "apples, pears, and bananas" into individual components.
+
+
+(2)Why is it better to split up by boundary("word") than " "?
+
+
+(3)What does splitting with an empty string ("") do? Experiment, and then read the documentation.
+
+##14.5.1 Exercises
+(1)How would you find all strings containing \ with regex() vs. with fixed()?
+
+(2)What are the five most common words in sentences?
+
+##14.7.1 Exercises
+(1)Find the stringi functions that:
 
 Count the number of words.
 Find duplicated strings.
 Generate random text.
-How do you control the language that stri_sort() uses for sorting?
+
+(2)How do you control the language that stri_sort() uses for sorting?
