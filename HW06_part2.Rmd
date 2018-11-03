@@ -1,6 +1,6 @@
 ---
 title: "STAT 547M Homework 6"
-author: "Junbin ZHANG"
+author: "Tian Gao"
 date: "Oct 30, 2018"
 output: github_document
 ---
@@ -8,163 +8,66 @@ output: github_document
 # Bring rectangular data in
 
 ```{r}
-## load gapminder
-suppressPackageStartupMessages(library(gapminder))
 ## load tidyverse
 suppressPackageStartupMessages(library(tidyverse))
-## load testthat
-suppressPackageStartupMessages(library(testthat))
-## load stringi
-suppressPackageStartupMessages(library(stringi))
 ## load leaflet
 suppressPackageStartupMessages(library(leaflet))
-```
-
-# Install and load `singer` package
-
-```{r}
-## install singer
 # install.packages("devtools")
 #devtools::install_github("JoeyBernhardt/singer")
-## load singer
 suppressPackageStartupMessages(library(singer))
-```
-
-# Install and load `ggmap` package
-
-```{r}
 ## install ggmap
-# install.packages("devtools")
 # devtools::install_github("dkahle/ggmap", ref = "tidyup")
 ## load ggmap
 suppressPackageStartupMessages(library(ggmap))
 ## register API key (please do not use this key for any other purpose, thank you)
 register_google(key = "AIzaSyDJnU2gOUgrDiIOSdujwanq9yX2yqRVlu4")
+
+
 ```
 
 ## Work with the`singer`data
-Let's first have a preview of `single_locations` dataframe, in order to know why it is "dirty".
-```{r}
-# show previews of single_locations
-head(singer_locations) %>% 
-  # select columns we care about
-  select(track_id, latitude, longitude, name, city) %>% 
-  knitr::kable(col.names = c("Track ID", "Latitude", "Longitude", "Name", "City"))
-tail(singer_locations) %>% 
-  # select columns we care about
-  select(track_id, latitude, longitude, name, city) %>% 
-  knitr::kable(col.names = c("Track ID", "Latitude", "Longitude", "Name", "City"))
-```
 
-So the dataframe is "dirty" because it contains `NA` values. Therefore, the first thing we need to do is to filter out rows with `NA` latitude or longitude.
+# Task 4: Work with the `singer` data
+
+* Use `purrr` to map latitude and longitude into human readable information on the band's origin places.
 
 ```{r}
-# filter out latitude and longitude with NA
-singer_locations_no_na <- singer_locations %>% 
-  filter(!is.na(latitude) | !is.na(longitude))
-# show previews of filtered dataframe
-head(singer_locations_no_na) %>% 
-  # select columns we care about
-  select(track_id, latitude, longitude, name, city) %>% 
-  knitr::kable(col.names = c("Track ID", "Latitude", "Longitude", "Name", "City"))
-tail(singer_locations_no_na) %>% 
-  # select columns we care about
-  select(track_id, latitude, longitude, name, city) %>% 
-  knitr::kable(col.names = c("Track ID", "Latitude", "Longitude", "Name", "City"))
-```
-
-In the next step, we use `map2()` (since we need to input both latitude and longitude) of `purrr` and `revgeocode()` of `ggmap` to get the cities. Her we use `revgeocode()` as a **formula** instead of a **function** inside `map2()`. According to [this reference](https://www.rdocumentation.org/packages/purrr/versions/0.2.5/topics/map2), we need to add "~" before the function name, and use ".x" and ".y" to represent those two arguments.
-
-In addtion, since there are more than 4,000 rows in `singer_locations_no_na`, and it requires billing on Google Clouds Services, we only use the first 30 rows as an example. However, this solution can be easily extended to handle the whole dataframe.
-
-```{r, message = FALSE}
-# trim singer_locations_no_na for the top 100 rows
-trim_locations <- singer_locations_no_na %>% 
+# clean the data to delete the locations that have a value of NA
+# here I only use the first 20 records to make the result clean
+# The idea here can be used on the whole frame
+cleaned_data <- singer_locations %>% 
+  filter( !is.na(longitude)|!is.na(latitude)) %>%
   slice(1:20)
-# use ggmap to get locations
-ggmap_locations <- map2_chr(trim_locations$longitude, trim_locations$latitude, ~ revgeocode(as.numeric(c(.x, .y))))
+# convert the data to the readable version 
+locations <- map2_chr(cleaned_data$longitude, cleaned_data$latitude, ~ revgeocode(as.numeric(c(.x, .y))))
+
+## show the result
+cbind(cleaned_data$city, locations) %>% 
+  knitr::kable(col.names = c("city", "readable location"))
 ```
 
-Here we apply `map2_chr()` to make the results as a vector of strings instead of a list to get rid of unnecessary information.
-
+* Try to check wether the place in `city` corresponds to the information you retrieved.
 ```{r}
-# show the final results
-cbind(trim_locations$city, ggmap_locations) %>% 
-  knitr::kable(col.names = c("City in `singer_locations`", "City Obtained by `ggmap`"))
+## first we need to find the city names
+newcity<-cleaned_data %>% 
+ select(city) %>% 
+ separate(city,into = c("1","2","3"),sep=" ") 
+#delete punctuation
+newcity <- mapply(str_replace_all,newcity,",|-","") 
+knitr::kable(newcity)
+
+## second we need to extract the usel information from the city names
+stringlocation <- as.character(locations)
+newlocation <- str_extract_all(stringlocation[str_detect(stringlocation,"\\, [A-Z0-9].*[a-z]\\,|\\b[A-Z]{2,}\\b")],"\\, [A-Z0-9].*[a-z]\\,|\\b[A-Z]{2,}\\b",simplify = TRUE)
+City <- str_replace_all(newlocation[,1],", |,", "")
+newlocation[,1] = City
+knitr::kable(newlocation)
+
+
+
+result <- ((newlocation[,1]==newcity[,1])|(newlocation[,1]==newcity[,2])|(newlocation[,1]==newcity[,3])|(newlocation[,2]==newcity[,1])|(newlocation[,2]==newcity[,2])|(newlocation[,2]==newcity[,3])|(newlocation[,3]==newcity[,1])|(newlocation[,3]==newcity[,2])|(newlocation[,3]==newcity[,3]))
+result
+
 ```
 
-## Task 2.2
-
-**Try to check wether the place in `city` corresponds to the information you retrieved.**
-
-Having a closer look at the above table, there is another point that make `city` dirty: the way to name a city are not the same accoss the column, for example, "UK - England - London" is a weired expression.
-
-However, we can perform some preprocessing on the data to finish this task:
-
-- We first extract words from every string, and convert them into lower case for further processing.
-- Based on some knowledge on the states of America, we replace all full state names into their abbreviations.
-
-In the end, we try to find the intersection of the original `city` and the ones obtained from `ggmap`. If there is at least one match for a row, then we get the right result.
-
-```{r}
-# create pattern for replacement
-patterns <- c("new york" = "ny", "pennsylvania" = "pa", "california" = "ca", "washington" = "wa", "louisiana" = "la")
-## preprocessing
-ori_words <- trim_locations$city %>%
-  # convert to lower case
-  str_to_lower() %>% 
-  # split into words
-  str_split(pattern = boundary("word")) %>%
-  # replace state names
-  map(str_replace_all, patterns)
-ggmap_words <- ggmap_locations %>% 
-  # convert to lower case
-  str_to_lower() %>% 
-  # split into words
-  str_split(pattern = boundary("word")) %>%
-  # replace state names
-  map(str_replace_all, patterns)
-## find intersection and check if there are at least one match
-correct <- map2(ori_words, ggmap_words, ~intersect(.x, .y)) %>% 
-  map(function(l) {
-    return(length(l) >= 1)
-  })
-# show results
-cbind(trim_locations$city, ggmap_locations, correct) %>% 
-  knitr::kable(col.names = c("City in `singer_locations`", "City Obtained by `ggmap`", "Correct?"))
-```
-
-So there is only one incorrect result at line 15.
-
-```{r}
-# print incorrect results
-cbind(trim_locations$city, ggmap_locations, correct) %>% 
-  # convert to tibble
-  as_tibble() %>% 
-  # filter to have incorrect results
-  filter(correct == FALSE) %>% 
-  # select out column correct
-  select(-correct) %>% 
-  # show table
-  knitr::kable(caption = "Incorrect Result", col.names = c("City in `singer_locations`", "City Obtained by `ggmap`"))
-```
-
-
-## Task 2.3
-
-**If you still have time, you can go visual.**
-
-```{r}
-# use leaflet to plot information
-#singer_locations_no_na %>% 
-#  leaflet() %>% 
-#  addTiles() %>% 
-#  addCircles(
-#    lat = singer_locations_no_na$latitude,
-#    lng = singer_locations_no_na$longitude,
-#    # here the popup contains city, title, artist name and year
-#    popup = str_c(singer_locations_no_na$city, ": ", singer_locations_no_na$title, " by ", singer_locations_no_na$artist_name, " in ", #singer_locations_no_na$year)
-#  ) %>% 
-#  addProviderTiles(providers$OpenStreetMap)
-```
-    
+*  We can see that there are some false negative results like 53113 Bonn, Germany", "Bonn".
