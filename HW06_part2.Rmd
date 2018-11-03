@@ -2,15 +2,11 @@
 title: "STAT 547M Homework 6"
 author: "Junbin ZHANG"
 date: "Oct 30, 2018"
-output:
-  html_document:
-    keep_md: true
-    toc: true
-    toc_depth: 2
-    theme: readable
+output: github_document
 ---
 
 # Bring rectangular data in
+
 ```{r}
 ## load gapminder
 suppressPackageStartupMessages(library(gapminder))
@@ -160,15 +156,15 @@ cbind(trim_locations$city, ggmap_locations, correct) %>%
 
 ```{r}
 # use leaflet to plot information
-singer_locations_no_na %>% 
-  leaflet() %>% 
-  addTiles() %>% 
-  addCircles(
-    lat = singer_locations_no_na$latitude,
-    lng = singer_locations_no_na$longitude,
-    # here the popup contains city, title, artist name and year
-    popup = str_c(singer_locations_no_na$city, ": ", singer_locations_no_na$title, " by ", singer_locations_no_na$artist_name, " in ", singer_locations_no_na$year)
-  ) %>% 
-  addProviderTiles(providers$OpenStreetMap)
+#singer_locations_no_na %>% 
+#  leaflet() %>% 
+#  addTiles() %>% 
+#  addCircles(
+#    lat = singer_locations_no_na$latitude,
+#    lng = singer_locations_no_na$longitude,
+#    # here the popup contains city, title, artist name and year
+#    popup = str_c(singer_locations_no_na$city, ": ", singer_locations_no_na$title, " by ", singer_locations_no_na$artist_name, " in ", #singer_locations_no_na$year)
+#  ) %>% 
+#  addProviderTiles(providers$OpenStreetMap)
 ```
     
