@@ -21,20 +21,35 @@ suppressPackageStartupMessages(library(testthat))
 suppressPackageStartupMessages(library(stringi))
 ## load leaflet
 suppressPackageStartupMessages(library(leaflet))
+
 ```
 
-
+```{r, message=FALSE}
+knitr::opts_chunk$set(warning = F)
+suppressPackageStartupMessages(library(tidyverse))
+suppressPackageStartupMessages(library(singer))
+suppressPackageStartupMessages(library(stringr))
+suppressPackageStartupMessages(library(forcats))
+suppressPackageStartupMessages(library(purrr))
+suppressPackageStartupMessages(library(repurrrsive))
+suppressPackageStartupMessages(library(ggmap))
+suppressPackageStartupMessages(library(leaflet))
+suppressPackageStartupMessages(library(mapview))
+suppressPackageStartupMessages(library(htmlwidgets))
+suppressPackageStartupMessages(library(webshot))
+#knitr::opts_chunk$set(fig.width=10, fig.height=5)
 
 # Install and load `ggmap` package
-
+```
 ```{r}
 #install ggmap
 #install.packages("devtools")
 #devtools::install_github("dkahle/ggmap", ref = "tidyup")
 #load ggmap
-suppressPackageStartupMessages(library(ggmap))
+#suppressPackageStartupMessages(library(ggmap))
+#devtools::install_github("JoeyBernhardt/singer")
 #register API key (please do not use this key for any other purpose, thank you)
-#register_google(key = "AIzaSyBsFRsHrAmuPDmcWd-7D5AbENG6_XreKDo")
+# register_google(key = "AIzaSyBsFRsHrAmuPDmcWd-7D5AbENG6_XreKDo")
 ```
 
 # Task 1: Character data
@@ -575,3 +590,4 @@ stringi::stri_rand_strings(5,2)
 (2)How do you control the language that stri_sort() uses for sorting?
 
 * Solution: we can use language argument in stri_sort function for example, stri_sort(french_words, french = TRUE)
+
