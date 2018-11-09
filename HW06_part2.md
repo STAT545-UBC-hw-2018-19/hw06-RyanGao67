@@ -128,8 +128,8 @@ newcity<-cleaned_data %>%
     ## 3, 4, 5, 6, 7, 10, 13, 18, 19, 20].
 
 ``` r
-#delete punctuation
-newcity <- mapply(str_replace_all,newcity,",|-","") 
+#Then we try to make the data cleaner delete punctuation
+newcity <- mapply(str_replace_all,newcity,".|,|-|=","") 
 knitr::kable(newcity)
 ```
 
@@ -159,7 +159,12 @@ knitr::kable(newcity)
 ``` r
 ## second we need to extract the usel information from the city names
 stringlocation <- as.character(locations)
-newlocation <- str_extract_all(stringlocation[str_detect(stringlocation,"\\, [A-Z0-9].*[a-z]\\,|\\b[A-Z]{2,}\\b")],"\\, [A-Z0-9].*[a-z]\\,|\\b[A-Z]{2,}\\b",simplify = TRUE)
+
+newlocation <- 
+str_extract_all(
+  stringlocation[str_detect(stringlocation,
+"\\,[A-Z0-9].*[a-z]\\,|\\b[A-Z]{2,}\\b")],"\\,[A-Z0-9].*[a-z]\\,|\\b[A-Z]{2,}\\b",simplify = TRUE)
+
 City <- str_replace_all(newlocation[,1],", |,", "")
 newlocation[,1] = City
 knitr::kable(newlocation)
@@ -189,7 +194,17 @@ knitr::kable(newlocation)
 | Kent           | WA          | USA |     |
 
 ``` r
-result <- ((newlocation[,1]==newcity[,1])|(newlocation[,1]==newcity[,2])|(newlocation[,1]==newcity[,3])|(newlocation[,2]==newcity[,1])|(newlocation[,2]==newcity[,2])|(newlocation[,2]==newcity[,3])|(newlocation[,3]==newcity[,1])|(newlocation[,3]==newcity[,2])|(newlocation[,3]==newcity[,3]))
+# wether the place in `city` corresponds to the information you retrieved.
+result <- ((newlocation[,1]==newcity[,1])|
+             (newlocation[,1]==newcity[,2])|
+             (newlocation[,1]==newcity[,3])|
+             (newlocation[,2]==newcity[,1])|
+             (newlocation[,2]==newcity[,2])|
+             (newlocation[,2]==newcity[,3])|
+             (newlocation[,3]==newcity[,1])|
+             (newlocation[,3]==newcity[,2])|
+             (newlocation[,3]==newcity[,3]))
+
 result
 ```
 
@@ -202,16 +217,21 @@ result
 * If you still have time, you can go visual: give a look to the library leaflet and plot some information about the bands. A snippet of code is provided below.
 
 ```{r}
-map <- leaflet()  %>%   
-addCircles( lat=filter_NA_locations$latitude,
+# use leaflet to plot information
+map <- leaflet()  %>%  
+  addTitles()%>%
+addCircles( 
+            popup = filter_NA_locations$title,
+            lat=filter_NA_locations$latitude,
             lng=filter_NA_locations$longitude,
-            popup = filter_NA_locations$title) %>% 
+           ) %>% 
   addProviderTiles(providers$OpenStreetMap)
 
-#saveWidget(map, "map.html", selfcontained = FALSE)
-#webshot("map.html", file = "map.png",
-#        cliprect = "viewport")
+saveWidget(map, "map.html")
 
-#mapshot(map, file = "./map.png")
+webshot("map.html", file = "map.png",
+        cliprect = "viewport")
+
+mapshot(map, file = "./images/map.png")
 ```
 ![alt text](https://github.com/STAT545-UBC-students/hw06-RyanGao67/blob/master/images/map.png)
