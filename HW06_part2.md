@@ -161,7 +161,7 @@ stringlocation <- as.character(locations)
 newlocation <- 
 str_extract_all(
   stringlocation[str_detect(stringlocation,
-"\\,[A-Z0-9].*[a-z]\\,|\\b[A-Z]{2,}\\b")],"\\,[A-Z0-9].*[a-z]\\,|\\b[A-Z]{2,}\\b",simplify = TRUE)
+"\\b[A-Z]{2,}\\b")],"\\,[A-Z0-9].*[a-z]\\,|\\,[A-Z0-9].*[a-z]\\,|\\b[A-Z]{2,}\\b",simplify = TRUE)
 
 City <- str_replace_all(newlocation[,1],", |,", "")
 newlocation[,1] = City
