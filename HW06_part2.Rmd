@@ -19,9 +19,6 @@ suppressPackageStartupMessages(library(singer))
 # devtools::install_github("dkahle/ggmap", ref = "tidyup")
 ## load ggmap
 suppressPackageStartupMessages(library(ggmap))
-## register API key (please do not use this key for any other purpose, thank you)
-register_google(key = "AIzaSyDJnU2gOUgrDiIOSdujwanq9yX2yqRVlu4")
-
 
 ```
 
