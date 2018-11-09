@@ -55,7 +55,7 @@ suppressPackageStartupMessages(library(webshot))
 # Task 1: Character data
 ## Exercise 14.2.5
 
-(1)In code that doesn¡¯t use stringr, you¡¯ll often see paste() and paste0(). What¡¯s the difference between the two functions? What stringr function are they equivalent to? How do the functions differ in their handling of NA?
+(1)In code that doesn??t use stringr, you??ll often see paste() and paste0(). What??s the difference between the two functions? What stringr function are they equivalent to? How do the functions differ in their handling of NA?
 
 * Solution: The difference is that 'paste()' allows us to add separator when we want to concatenate strings, while 'paste0()' can not. 'paste()' and 'paste0()' are equivalent to 'str_c()'.  For 'paste()' and 'paste0()', NA is directly converted to string 'NA'. If NA is one of the input string of 'str_c()', the output of str_c() will become NA. The following are some example:
 ```{r}
@@ -108,7 +108,7 @@ cat(string)
 cat(str_wrap(string))
 ```
 
-(5)What does str_trim() do? What¡¯s the opposite of str_trim()?
+(5)What does str_trim() do? What??s the opposite of str_trim()?
 
 * Solution: str_trim() delete all the heading and tailing spaces including Tab. The opposite of "str_trim()" is "str_pad()"
 ```{r}
@@ -138,7 +138,7 @@ tostring(c("a","b","c"))
 
 ## 14.3.1.1 Exercises
 
-(1)Explain why each of these strings don¡¯t match a \: "\", "\\", "\\\".How would you match the sequence "'\?
+(1)Explain why each of these strings don??t match a \: "\", "\\", "\\\".How would you match the sequence "'\?
 
 * Solution: '\' is an escape character and is only meaningful when followed by some other character. '\\' is treated as '\' in R however is treated as escape character in regex, Thus it is also meaningless in regex. '\\\' will be interpreted as a back slash and and escape character in R, thus it is also illegal in regex. To match a '\', we can do the following:
 ```{r}
@@ -168,17 +168,17 @@ str_view("hello$^$world", pattern="\\$\\^\\$", match = TRUE)
 
 (2)Given the corpus of common words in stringr::words, create regular expressions that find all words that:
 
-* Start with ¡°y¡±.
+* Start with ??y??.
 ```{r}
 str_view(stringr::words, pattern="^y", match=TRUE)
 ```
 
-* End with ¡°x¡±.
+* End with ??x??.
 ```{r}
 str_view(stringr::words, pattern = "x$", match = TRUE)
 ```
 
-* Are exactly three letters long. (Don¡¯t cheat by using str_length()!)
+* Are exactly three letters long. (Don??t cheat by using str_length()!)
 ```{r}
 str_view(stringr::words, pattern="^.{3}$",match=TRUE)
 ```
@@ -199,7 +199,7 @@ Start with a vowel.
 ```{r}
 str_view(stringr::words, pattern="^[aeiou]", match=TRUE)
 ```
-That only contain consonants. (Hint: thinking about matching ¡°not¡±-vowels.)
+That only contain consonants. (Hint: thinking about matching ??not??-vowels.)
 
 * Solution:
 ```{r}
@@ -218,14 +218,14 @@ str_view(stringr::words, pattern="ing$|ise$", match=TRUE)
 ```
 
 
-(2)Empirically verify the rule ¡°i before e except after c¡±.
+(2)Empirically verify the rule ??i before e except after c??.
 * Solution:
 ```{r}
 str_subset(stringr::words, pattern = "[^c]ie")
 ```
 * From the result we know that the i before e except after c is true.
 
-Is ¡°q¡± always followed by a ¡°u¡±?
+Is ??q?? always followed by a ??u???
 
 * Solution:
 ```{r}
@@ -235,7 +235,7 @@ str_view(stringr::words, pattern="q[^u]",match=TRUE)
 * we can see that the result is empty, thus this statement is true. 
 
 
-(3)Write a regular expression that matches a word if it¡¯s probably written in British English, not American English.
+(3)Write a regular expression that matches a word if it??s probably written in British English, not American English.
 
 * In American English, "u"  between "o" and "r" is sometimes omitted. We can use this to detect British English
 ```{r}
@@ -254,7 +254,7 @@ str_view(c("+1 (778) 522 0667", "+86 1836230399", "+123456789"), pattern="\\+1 \
 
 * Solution: ? is equivalent to {0,1}; + is equivilent to {1,}; * is equivalent to {0,}
 
-(2)Describe in words what these regular expressions match: (read carefully to see if I¡¯m using a regular expression or a string that defines a regular expression.)
+(2)Describe in words what these regular expressions match: (read carefully to see if I??m using a regular expression or a string that defines a regular expression.)
 
 ^.*$
 
@@ -296,9 +296,9 @@ Have two or more vowel-consonant pairs in a row.
 str_view(stringr::words, pattern="([aeiou][^aeiou]){2,}", match=TRUE)
 ```
 
-
-
 Solve the beginner regexp crosswords at https://regexcrossword.com/challenges/beginner.
+* Solution
+[[https://github.com/STAT545-UBC-students/hw06-RyanGao67/blob/master/matrix.png]]
 
 ## 14.3.5.1 Exercises
 (1)Describe, in words, what these expressions will match:
@@ -334,14 +334,14 @@ str_view(stringr::words, pattern = "^(.).*\\1$", match=TRUE)
 ```
 
 
-Contain a repeated pair of letters (e.g. ¡°church¡± contains ¡°ch¡± repeated twice.)
+Contain a repeated pair of letters (e.g. ??church?? contains ??ch?? repeated twice.)
 
 * Solution:
 ```{r}
 str_view(stringr::words, pattern = "(..).*\\1", match=TRUE)
 ```
 
-Contain one letter repeated in at least three places (e.g. ¡°eleven¡± contains three ¡°e¡±s.)
+Contain one letter repeated in at least three places (e.g. ??eleven?? contains three ??e??s.)
 
 * Solution:
 ```{r}
@@ -419,7 +419,7 @@ stringr::words %>%
 
 
 ## 14.4.3.1 Exercises
-(1)In the previous example, you might have noticed that the regular expression matched ¡°flickered¡±, which is not a colour. Modify the regex to fix the problem.
+(1)In the previous example, you might have noticed that the regular expression matched ??flickered??, which is not a colour. Modify the regex to fix the problem.
 
 * To fix this problem, we need \b in regex. Here is the code:
 ```{r}
@@ -458,7 +458,7 @@ a[a!=""]
 ```
 
 ## 14.4.4.1 Exercises
-(1)Find all words that come after a ¡°number¡± like ¡°one¡±, ¡°two¡±, ¡°three¡± etc. Pull out both the number and the word.
+(1)Find all words that come after a ??number?? like ??one??, ??two??, ??three?? etc. Pull out both the number and the word.
 
 * Solution:
 ```{r}

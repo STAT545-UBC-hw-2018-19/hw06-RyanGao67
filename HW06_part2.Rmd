@@ -71,3 +71,19 @@ result
 ```
 
 *  We can see that there are some false negative results like 53113 Bonn, Germany", "Bonn".
+
+* If you still have time, you can go visual: give a look to the library leaflet and plot some information about the bands. A snippet of code is provided below.
+
+```{r}
+map <- leaflet()  %>%   
+addCircles( lat=filter_NA_locations$latitude,
+            lng=filter_NA_locations$longitude,
+            popup = filter_NA_locations$title) %>% 
+  addProviderTiles(providers$OpenStreetMap)
+
+#saveWidget(map, "map.html", selfcontained = FALSE)
+#webshot("map.html", file = "map.png",
+#        cliprect = "viewport")
+
+#mapshot(map, file = "./map.png")
+```
