@@ -200,6 +200,7 @@ result
     Bonn, Germany“,”Bonn".
     
 * If you still have time, you can go visual: give a look to the library leaflet and plot some information about the bands. A snippet of code is provided below.
+
 ```{r}
 map <- leaflet()  %>%   
 addCircles( lat=filter_NA_locations$latitude,
@@ -213,4 +214,4 @@ addCircles( lat=filter_NA_locations$latitude,
 
 #mapshot(map, file = "./map.png")
 ```
-!(github)[https://github.com/STAT545-UBC-students/hw06-RyanGao67/blob/master/images/map.png]
+
