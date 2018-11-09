@@ -214,4 +214,4 @@ addCircles( lat=filter_NA_locations$latitude,
 
 #mapshot(map, file = "./map.png")
 ```
-
+![alt text](https://github.com/STAT545-UBC-students/hw06-RyanGao67/blob/master/images/map.png)
