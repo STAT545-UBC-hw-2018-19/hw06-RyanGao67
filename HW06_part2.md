@@ -166,10 +166,18 @@ str_extract_all(
   stringlocation[str_detect(stringlocation,
 "\\b[A-Z]{2,}\\b")],"\\,[A-Z0-9].*[a-z]\\,|\\,[A-Z0-9].*[a-z]\\,|\\b[A-Z]{2,}\\b",simplify = TRUE)
 ```
+* Basic Idea: Firstly I seperate the city into words then I clean the data by removing puntuations.
+
+* For the information from revgeocode(), I first find the city name and find the abbreviations
+
+* Then I compare all columns one by one to find if there's any inconsistency. 
 
 ```r
-## We'll then find the city names
+##  find the city names
+##  then replace the puntuations
 Place <- str_replace_all(newlocation[,1],", |,", "")
+
+## Build and show result
 newlocation[,1] = Place
 knitr::kable(newlocation)
 ```
