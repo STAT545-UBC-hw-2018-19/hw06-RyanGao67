@@ -239,11 +239,5 @@ addCircles(
            ) %>% 
   addProviderTiles(providers$OpenStreetMap)
 
-saveWidget(map, "map.html")
-
-webshot("map.html", file = "map.png",
-        cliprect = "viewport")
-
-mapshot(map, file = "./images/map.png")
 ```
 ![alt text](https://github.com/STAT545-UBC-students/hw06-RyanGao67/blob/master/images/map.png)
