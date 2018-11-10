@@ -233,9 +233,9 @@ result
 map <- leaflet()  %>%  
   addTitles()%>%
 addCircles( 
-            popup = filter_NA_locations$title,
-            lat=filter_NA_locations$latitude,
-            lng=filter_NA_locations$longitude,
+            popup = cleaned_data$title,
+            lat=cleaned_data$latitude,
+            lng=cleaned_data$longitude,
            ) %>% 
   addProviderTiles(providers$OpenStreetMap)
 
