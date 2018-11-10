@@ -157,14 +157,20 @@ knitr::kable(newcity)
 ``` r
 ## second we need to extract the usel information from the city names
 stringlocation <- as.character(locations)
+```
 
+```r
+## find the city names with the initials 
 newlocation <- 
 str_extract_all(
   stringlocation[str_detect(stringlocation,
 "\\b[A-Z]{2,}\\b")],"\\,[A-Z0-9].*[a-z]\\,|\\,[A-Z0-9].*[a-z]\\,|\\b[A-Z]{2,}\\b",simplify = TRUE)
+```
 
-City <- str_replace_all(newlocation[,1],", |,", "")
-newlocation[,1] = City
+```r
+## We'll then find the city names
+Place <- str_replace_all(newlocation[,1],", |,", "")
+newlocation[,1] = Place
 knitr::kable(newlocation)
 ```
 
